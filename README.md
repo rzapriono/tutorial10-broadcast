@@ -4,7 +4,7 @@
 Dari screenshot tersebut, terlihat bahwa 1 server dijalankan dengan menggunakan command `cargo run --bin server` dan 3 client dijalankan di 3 terminal berbeda menggunakan command `cargo run --bin client`. Server terhubung dengan ketiga client terlihat dari adanya 3 new connection yang tercetak pada terminal tempat server dijalankan. Masing-masing dari client juga mengirim pesan ke server. Dapat terlihat bahwa semua client dan juga server menerima pesan yang dikirim oleh masing-masing client tersebut. Hal ini terjadi karena setiap client mengetikkan pesan di terminal, maka server akan menerima pesan tersebut. Kemudian, server akan mengirimkannya ke semua client yang terkoneksi dengan server.
 
 # 2.2 Modifying the websocket port.
-Untuk mengubah port number menjadi 8080, diperlukan perubahan pada file `src/bin/server.rs` dan `src//bin/client.rs`
+Untuk mengubah port number menjadi 8080, diperlukan perubahan pada file `src/bin/server.rs` dan `src/bin/client.rs`
 
 Pada awalnya kode berikut pada `src/bin/server.rs` seperti ini:
 ```rust
@@ -26,7 +26,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
 
 <br>
 
-Pada awalnya kode berikut pada `src/client/.rs` seperti ini:
+Pada awalnya kode berikut pada `src/bin/client/.rs` seperti ini:
 ```rust
 async fn main() -> Result<(), tokio_websockets::Error> {
     let (mut ws_stream, _) =
@@ -44,7 +44,20 @@ async fn main() -> Result<(), tokio_websockets::Error> {
             .await?;
 ```
 
-
 Berikut adalah screenshot saat menjalankan 1 server dan 3 client setelah melakukan perubahan pada port number
 ![2.2](./img/experiment_2.2.png)
 Dari screenshot tersebut, dapat terlihat bahwa selama client dan server memiliki port yang sama, maka program akan tetap berjalan dengan baik sama seperti sebelum port number diubah. Keduanya dapat berkomunikasi dengan baik karena pada kode server dan klien menggunakan protokol websocket yang sama, yang merupakan bagian dari library tokio_websockets.
+
+# 2.3 Small changes. Add some information to client
+Perubahan pada `src/bin/server.rs`:
+![2.3 server](./img/experiment_2.3_server.png)
+
+![2.3 server](./img/experiment_2.3_server(1).png)
+
+Perubahan pada `src/bin/client/.rs`:
+![2.3 client](./img/experiment_2.3_client.png)
+
+Dengan perubahan-perubahan tersebut, berikut adalah hasilnya dengan 1 server dan 3 client.
+![2.3 result](./img/experiment_2.3_result.png)
+
+Perubahan-perubahan diatas dibuat agar saat `bcast.tx` yang merupakan sender mengirimkan pesan ke tiap-tiap subscribernya, maka akan di berikan juga address pengirim dari pesan tersebut melalui variabel addr. Selain itu, telah ditambahkan juga text "from Reza Apriono's computer" untuk beberapa pesan.
